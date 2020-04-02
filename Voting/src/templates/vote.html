@@ -1,0 +1,45 @@
+{% extends 'user_home.html' %}
+
+{% block homeContent %}
+{% if message %}
+<div class="col">
+    <p class="display-5">{{ message }}</p>
+</div>
+{% else %}
+{% if voteForm %}
+<div class="col-sm col-md-4 mx-auto">
+    <form method="POST">{% csrf_token %}
+        {% for field in voteForm %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="bmd-label-floating">{{ field.label_tag }}</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <!-- <div class="form-group">
+            <label for="{{ voteForm.candidate.id_for_label }}" class="bmd-label-floating">{{ voteForm.candidate.label_tag }}</label>
+            {{ voteForm.candidate }}
+        </div> -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-raised">Submit</button>
+        </div>
+    </form>
+</div>
+{% else %}
+
+<div class="col-sm col-md-4 mx-auto">
+    <form method="POST">{% csrf_token %}
+        {% for field in areaForm %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="bmd-label-floating">{{ field.label_tag }}</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-raised">Submit</button>
+        </div>
+    </form>
+</div>
+{% endif %}
+{% endif %}
+
+{% endblock %}

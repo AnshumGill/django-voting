@@ -1,0 +1,128 @@
+{% extends 'base_landing.html' %}
+{% block content %}
+{% load static %}
+<div class="d-flex align-items-center background-box">
+	<div class="container text-white">
+		<div class="row">
+			<div class="col-12">
+				<p class="display-2">SmartVote</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<p class="card-text lead">We want to solve the problem with the existing voting model.<br/>So we developed an online voting system utilizing Blockchain to make it secure.</p>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12">
+				<a href="#section2" class="btn btn-raised btn-secondary">Learn More</a>
+ 			</div>
+		</div>
+	</div> 
+</div>
+
+
+<div class="container mt-5" id="section2">
+	<div class="row">
+		<div class="col-sm-12 col-md-4 mt-4">
+			<div class="card">
+				<p class="card-img-top text-center"><i class="fas fa-address-card fa-7x"></i></p>
+				<div class="card-body">
+					<h5 class="card-title">Thing #1</h5>
+					<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nec vulputate elit, non bibendum massa. Sed luctus, mauris et imperdiet.</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 col-md-4 mt-4">
+			<div class="card">
+				<p class="card-img-top text-center"><i class="fas fa-user-shield fa-7x"></i></p>
+				<div class="card-body">
+					<h5 class="card-title">Thing #2</h5>
+					<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nec vulputate elit, non bibendum massa. Sed luctus, mauris et imperdiet.</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 col-md-4 mt-4">
+			<div class="card">
+				<p class="card-img-top text-center"><i class="fab fa-python fa-7x"></i></p>
+				<div class="card-body">
+					<h5 class="card-title">Thing #3</h5>
+					<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nec vulputate elit, non bibendum massa. Sed luctus, mauris et imperdiet.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row text-center mt-4">
+		<div class="col-12">
+			<a href="#section3"><i class="fas fa-chevron-down fa-3x"></i></a>
+		</div>
+	</div>
+</div>
+
+
+<div class="pb-5" style="background-color:#3A506B; " id="section3">
+	<div class="container pt-5">
+		<h2 class="text-center text-white">How it works</h2>
+
+		<div class="row mt-3 align-items-center">
+			<div class="col-6 col-md-2">
+				<span class="fa-stack" style="font-size: calc(3vw + 3vh);">
+					<i class="fas fa-circle fa-stack-2x fa-inverse img-responsive"></i>
+					<i class="fas fa-user-plus fa-stack-1x img-responsive"></i>
+				</span>
+			</div>
+			<div class="col-6 col-md-4 text-white">
+				<p class="ml-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nisi odio, viverra vitae molestie fermentum, ornare et arcu.</p>
+			</div>
+			<div class="d-none d-md-block col-1 text-white">
+				<!--<i class="fas fa-level-down-alt fa-3x"></i>-->
+				<i class="fas fa-share fa-3x fa-rotate-90"></i>
+			</div>
+		</div>
+
+		<div class="row mt-3 justify-content-end align-items-center">
+			<div class="d-none d-md-block col-1 text-white">
+				<!--<i class="fas fa-level-down-alt fa-3x fa-flip-horizontal"></i>-->
+				<i class="fas fa-reply fa-3x fa-rotate-270"></i>
+			</div>
+			<div class="col-6 col-md-4 text-white">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nisi odio, viverra vitae molestie fermentum, ornare et arcu.</p>
+			</div>
+			<div class="col-6 col-md-2">
+				<span class="fa-stack" style="font-size: calc(3vw + 3vh);">
+					<i class="fas fa-circle fa-stack-2x fa-inverse"></i>
+					<i class="fas fa-user-check fa-stack-1x "></i>
+				</span>
+			</div>
+		</div>
+
+		<div class="row mt-3 align-items-center">
+			<div class="col-6 col-md-2">
+				<span class="fa-stack" style="font-size: calc(3vw + 3vh);">
+					<i class="fas fa-circle fa-stack-2x fa-inverse"></i>
+					<i class="fas fa-poll fa-stack-1x "></i>
+				</span>
+			</div>
+			<div class="col-6 col-md-4 text-white">
+				<p class="ml-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nisi odio, viverra vitae molestie fermentum, ornare et arcu.</p>
+			</div>
+			<div class="d-none d-md-block col-1 text-white">
+				<!--<i class="fas fa-level-down-alt fa-3x"></i>-->
+				<i class="fas fa-share fa-3x fa-rotate-90"></i>
+			</div>
+		</div>
+
+		<div class="row mt-3 justify-content-end align-items-center">
+			<div class="col-6 col-md-4 text-white">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nisi odio, viverra vitae molestie fermentum, ornare et arcu.</p>
+			</div>
+			<div class="col-6 col-md-2">
+				<span class="fa-stack" style="font-size: calc(3vw + 3vh);">
+					<i class="fas fa-circle fa-stack-2x fa-inverse"></i>
+					<i class="fas fa-vote-yea fa-stack-1x"></i>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

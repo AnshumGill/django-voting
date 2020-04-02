@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Online Voting</title>
+	
+	{% include 'css.html' %}
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body class="d-flex flex-column h-100">
+	<header>
+		{% include 'navbar.html' %}
+	</header>
+	<main role="main" class="flex-shrink-0">
+		{% block content %}{% endblock %}
+	</main>
+	{% include 'footer.html' %}
+	{% include 'js.html' %}
+</body>
+</html>

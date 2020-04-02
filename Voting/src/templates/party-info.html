@@ -1,0 +1,51 @@
+{% extends 'user_home.html' %}
+
+{% block homeContent %}
+<div class="col-sm col-md-4 text-center">
+	<form method="POST">{% csrf_token %}
+		<div class="form-row align-items-end">
+			<div class="form-group col-6">
+				{% for field in form %}
+					{{ field.label_tag }}
+					{{ field }}
+				{% endfor %}
+			</div>
+			<div class="form-group col-6">
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</div>
+		</div>
+	</form>
+</div>
+{% if formSubmitted %}
+<div class="col">
+	<div class="table-responsive-md">
+		<table class="table table-hover">
+			<thead class="thead-dark">
+				<tr>
+					<th>Name</th>
+					<th>Location</th>
+					<th>Affiliation</th>
+					<th>Votes</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for candidate in members %}
+					<tr>
+						<td>{{ candidate.cname }}</td>
+						<td>{{ candidate.location }}</td>
+						<td>{{ candidate.affiliation }}</td>
+						<td>{{ candidate.vote }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% else %}
+<div class="col text-center">
+	<p>Please select a party and click submit to view data.</p>
+</div>
+{% endif %}
+
+	
+{% endblock %}

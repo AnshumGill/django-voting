@@ -1,0 +1,31 @@
+{% extends 'base_landing.html' %}
+{% block content %}
+<div class="container-fluid">
+	<div class="row mt-2">
+		<div class="col-sm-12 col-md-6 col-lg-3 mx-auto">
+			<h1 class="display-3">Login</h1>
+			<form method="POST">{% csrf_token %}
+				{% if form.errors %}
+	    			{% for field in form %}
+	    				{% for error in field.errors %}
+	    					<div class="alert alert-danger text-center">
+	    						{{ error|escape }}
+	    					</div>
+	    				{% endfor %}
+	    			{% endfor %}
+	    		{% endif %}
+				{% for fields in form %}
+					<div class="form-group">
+						<label for="{{ field.label_tag }}" class="bmd-label-floating">{{ fields.label_tag }}</label>
+						{{ fields }}
+					</div>
+				{% endfor %}
+				
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-raised">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

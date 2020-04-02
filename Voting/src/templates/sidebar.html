@@ -1,0 +1,21 @@
+{% url 'partyInfo' as party_url %}
+{% url 'castVote' as vote_url %}
+{% url 'verifyVote' as verify_url  %}
+<div class="sidebar-wrapper">
+    <nav class="d-none d-md-block navbar bg-dark text-white sidebar align-items-start" id="sidebarToggle">
+        <h2 class="sidebar-heading display-4 p-2">SmartVote</h2>
+        <div class="sidebar-sticky pt-3">
+            <ul class="nav flex-column">
+                <li class="nav-item my-2">
+                    <a class="nav-link" href="{{ vote_url }}">Vote</a>
+                </li>
+                <li class="nav-item my-2">
+                    <a class="nav-link" href="{{ verify_url }}">Verify Vote</a>
+                </li>
+                <li class="nav-item my-2">
+                    <a class="nav-link" href="{{ party_url }}">Party Information</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

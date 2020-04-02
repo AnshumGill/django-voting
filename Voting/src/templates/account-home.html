@@ -1,0 +1,23 @@
+{% extends 'user_home.html' %}
+{% block homeContent %}
+<div class="row">
+    <div class="col-12">
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" id="addressTab" data-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true">Address</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="emailTab" data-toggle="tab" href="#email" role="tab" aria-controls="email" aria-selected="false">Email</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="passwordTab" data-toggle="tab" href="#password" role="tab" aria-controls="password" aria-selected="true">Password</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row tab-content">
+    <div class="col-6 mx-auto">
+        Check
+    </div>
+</div>
+{% endblock %}

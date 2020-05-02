@@ -10,7 +10,7 @@ from candidates.models import candidate
 # Create your views here.
 
 ABI=[{'inputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'anonymous': False, 'inputs': [{'indexed': True, 'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'votedEvent', 'type': 'event'}, {'constant': True, 'inputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'name': 'candidates', 'outputs': [{'internalType': 'uint256', 'name': 'id', 'type': 'uint256'}, {'internalType': 'string', 'name': 'name', 'type': 'string'}, {'internalType': 'uint256', 'name': 'voteCount', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'candidatesCount', 'outputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'getVote', 'outputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [{'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'vote', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'name': 'voters', 'outputs': [{'internalType': 'bool', 'name': '', 'type': 'bool'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}]
-CONTACT_ADDRESS="0xC79C6944eE20B2eA0237327D4f367ee0E6fEDc28"
+CONTACT_ADDRESS="0x3329F52AA646bBb07dE85a86Db272E00F51D3cdA"
 
 @login_required
 def userHome(request):
@@ -32,12 +32,11 @@ def verifyVote(request):
 	}
 	return render(request,'verify-vote.html',context)
 
-def voteSuccess(request):
+def voteError(request):
 	context={
-		'message':'Your vote has been successfully cast. Thank You'
+		'message':'Vote already Cast'
 	}
 	return render(request,'vote-success.html',context)
-	
 
 def castVote(request):
 	elections=election.objects.all().first()
@@ -62,17 +61,19 @@ def castVote(request):
 			data=voteForm.cleaned_data
 			_candidate=candidate.objects.get(cname=data['candidate'])
 			w3=Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
-			election_contract=w3.eth.contract(
-				abi=ABI,
-				address=CONTACT_ADDRESS
-			)
-			account=w3.eth.accounts[current_user.id - 1]
-			tx_=election_contract.functions.vote(_candidate.id).transact({'from':account})
-			reciept=w3.eth.waitForTransactionReceipt(tx_)
-			getVote=election_contract.functions.getVote(1).transact()
-			print(getVote)
-			vote_obj=voteModel.objects.create(cname=_candidate.cname,vname=current_user.fullname,tx_hash=str(reciept['transactionHash']),block_hash=str(reciept['blockHash']))
-			return redirect('voteSuccess')
+			get_vote_obj = voteModel.objects.filter(vname=current_user.fullname)
+			if get_vote_obj:
+				context['error']=True
+			else:
+				context['error']=False
+				election_contract=w3.eth.contract(
+					abi=ABI,
+					address=CONTACT_ADDRESS
+				)
+				account=w3.eth.accounts[current_user.id - 1]
+				tx_=election_contract.functions.vote(_candidate.id).transact({'from':account})
+				reciept=w3.eth.waitForTransactionReceipt(tx_)
+				vote_obj=voteModel.objects.create(cname=_candidate.cname,vname=current_user.fullname,tx_hash=str(reciept['transactionHash']),block_hash=str(reciept['blockHash']))
 	else:
 		context={
 			'message':'Sorry the elections are currently closed.'

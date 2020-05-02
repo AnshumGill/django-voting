@@ -19,7 +19,8 @@ from .views import index
 from accounts.views import register_page,login_page
 from vote.views import userHome
 from parties.views import partyInfo
-from vote.views import castVote,voteSuccess,verifyVote
+from vote.views import castVote,verifyVote
+from elections.views import result
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -30,8 +31,8 @@ urlpatterns = [
     path('home',userHome,name="userHome"),
     path('party-information',partyInfo,name="partyInfo"),
     path('vote',castVote,name="castVote"),
-    path('vote-successful',voteSuccess,name="voteSuccess"),
     path('verify-vote',verifyVote,name="verifyVote"),
     path('account/',include(("accounts.urls","accounts"),namespace="account")),
+    path('result',result,name="result"),
     path('admin/', admin.site.urls),
 ]

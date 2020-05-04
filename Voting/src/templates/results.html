@@ -1,0 +1,30 @@
+{% extends 'user_home.html' %}
+
+{% block homeContent %}
+<div class="col">
+	<div class="table-responsive" >
+		<table class="table table-hover">
+			<thead class="thead-dark">
+				<tr>
+					<th>Candidate Name</th>
+					<th>Affiliation</th>
+                    <th>Location</th>
+                    <th>Votes</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for row in res %}
+					<tr>
+						<td>{{ row.cname }}</td>
+						<td>{{ row.affiliation }}</td>
+                        <td>{{ row.location }}</td>
+                        <td>{{ row.votes }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+{% endblock %}

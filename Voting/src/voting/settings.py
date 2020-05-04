@@ -25,7 +25,7 @@ SECRET_KEY = 'wbvu#e!al0uleyo5@1dyzq_n(%e(fyoh+cknp7u-4(#jlexeo9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0','192.168.252.87','127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0','192.168.0.107','127.0.0.1']
 
 
 # Application definition
@@ -92,6 +92,9 @@ DATABASES = {
     }
 }
 
+API_KEY="8f0fb02d-1cbd-11e9-9ee8-0200cd936042"
+ABI=[{'inputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'anonymous': False, 'inputs': [{'indexed': True, 'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'votedEvent', 'type': 'event'}, {'constant': True, 'inputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'name': 'candidates', 'outputs': [{'internalType': 'uint256', 'name': 'id', 'type': 'uint256'}, {'internalType': 'string', 'name': 'name', 'type': 'string'}, {'internalType': 'uint256', 'name': 'voteCount', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'candidatesCount', 'outputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'getVote', 'outputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [{'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'vote', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'name': 'voters', 'outputs': [{'internalType': 'bool', 'name': '', 'type': 'bool'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}]
+CONTRACT_ADDRESS="0xECdc93F056900616f78769018cbEC05e7c24004b"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

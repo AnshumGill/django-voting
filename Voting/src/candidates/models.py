@@ -18,7 +18,7 @@ class candidate(models.Model):
 	cname=models.CharField(max_length=120,blank=True,null=True)
 	location=models.CharField(max_length=50,blank=True,null=True)
 	affiliation=models.ForeignKey('parties.party',on_delete=models.CASCADE,blank=True,null=True)
-	vote=models.IntegerField(default=0)
+	#vote=models.IntegerField(default=0)
 	objects=candidateManager()
 
 	def __str__(self):

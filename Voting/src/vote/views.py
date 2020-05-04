@@ -1,16 +1,21 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .forms import selectAreaForm,castVoteForm
+from django.urls import reverse
+from .forms import selectAreaForm,castVoteForm,otpForm
 from candidates.models import candidate
 from elections.models import election
 from web3 import Web3
 from .models import vote as voteModel
 from candidates.models import candidate
+from django.contrib import messages
+import requests
+import json
+from django.conf import settings
 # Create your views here.
-
-ABI=[{'inputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'anonymous': False, 'inputs': [{'indexed': True, 'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'votedEvent', 'type': 'event'}, {'constant': True, 'inputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'name': 'candidates', 'outputs': [{'internalType': 'uint256', 'name': 'id', 'type': 'uint256'}, {'internalType': 'string', 'name': 'name', 'type': 'string'}, {'internalType': 'uint256', 'name': 'voteCount', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'candidatesCount', 'outputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'getVote', 'outputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [{'internalType': 'uint256', 'name': '_candidateId', 'type': 'uint256'}], 'name': 'vote', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'name': 'voters', 'outputs': [{'internalType': 'bool', 'name': '', 'type': 'bool'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}]
-CONTACT_ADDRESS="0xC79C6944eE20B2eA0237327D4f367ee0E6fEDc28"
+API_KEY=getattr(settings,"API_KEY")
+CONTRACT_ADDRESS=getattr(settings,"CONTRACT_ADDRESS")
+ABI=getattr(settings,"ABI")
 
 @login_required
 def userHome(request):
@@ -18,34 +23,63 @@ def userHome(request):
 
 def verifyVote(request):
 	obj=voteModel.objects.filter(vname=request.user.fullname).all()
-	'''
-	w3=Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
-	election_contract=w3.eth.contract(
-		abi=ABI,
-		address=CONTACT_ADDRESS
-	)
-	getvote=election_contract.functions.getVote(1).call()
-	print(getvote)
-	'''
 	context={
 		'objects':obj
 	}
 	return render(request,'verify-vote.html',context)
 
-def voteSuccess(request):
+def voteError(request):
 	context={
-		'message':'Your vote has been successfully cast. Thank You'
+		'message':'Vote already Cast'
 	}
 	return render(request,'vote-success.html',context)
-	
+
+def otpview(request):
+	otpform=otpForm(request.POST or None,initial={'city':request.session['city'],'locality':request.session['local'],'candidate':request.session['cname']})
+	context={
+		'otpForm':otpform
+	}
+	if otpform.is_valid():
+		current_user=request.user
+		data=otpform.cleaned_data
+		print("Session ID 2:",request.session['session_id'])
+		otp=str(data['otp'])
+		#print(otp)
+		url="https://2factor.in/API/V1/"+API_KEY+"/SMS/VERIFY/"+request.session['session_id']+"/"+otp
+		response=requests.request("GET",url)
+		resp_json=json.loads(response.text)
+		print(resp_json)
+		status=resp_json['Status']
+		status="Success"
+		if(status=="Success"):
+			_candidate=candidate.objects.get(cname=data['candidate'])
+			w3=Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
+			election_contract=w3.eth.contract(
+				abi=ABI,
+				address=CONTRACT_ADDRESS
+			)
+			account=w3.eth.accounts[current_user.id]
+			tx_=election_contract.functions.vote(_candidate.id).transact({'from':account})
+			reciept=w3.eth.waitForTransactionReceipt(tx_)
+			# print(reciept)
+			vote_obj=voteModel.objects.create(cname=_candidate.cname,vname=current_user.fullname,tx_hash=str(reciept['transactionHash']),block_hash=str(reciept['blockHash']))
+			messages.success(request,"Your vote has been cast. Thank You.",extra_tags="alert-success")
+			del request.session['city']
+			del request.session['local']
+			del request.session['cname']
+			del request.session['session_id']
+		else:
+			messages.error(request,"Invalid OTP entered",extra_tags="alert-danger")
+	return render(request,"otp.html",context)
 
 def castVote(request):
 	elections=election.objects.all().first()
+	session_id=None
 	if elections.get_status():
 		areaForm=selectAreaForm(request.POST or None)
 		voteForm=castVoteForm(None)
 		context={
-			'areaForm':areaForm,
+			'areaForm':areaForm
 		}
 		if areaForm.is_valid():
 			data=areaForm.cleaned_data
@@ -56,23 +90,24 @@ def castVote(request):
 			voteForm=castVoteForm(request.POST or None,initial={'city':city,'locality':locality})
 			voteForm.fields['candidate'].choices=candidate_list
 			context['voteForm']=voteForm
+			context['areaForm']=None
 		if voteForm.is_valid():
-			# VOTE HERE, BLOCKCHAIN STUFF
-			current_user=request.user
+			current_user=str(request.user)[3:]
 			data=voteForm.cleaned_data
-			_candidate=candidate.objects.get(cname=data['candidate'])
-			w3=Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
-			election_contract=w3.eth.contract(
-				abi=ABI,
-				address=CONTACT_ADDRESS
-			)
-			account=w3.eth.accounts[current_user.id - 1]
-			tx_=election_contract.functions.vote(_candidate.id).transact({'from':account})
-			reciept=w3.eth.waitForTransactionReceipt(tx_)
-			getVote=election_contract.functions.getVote(1).transact()
-			print(getVote)
-			vote_obj=voteModel.objects.create(cname=_candidate.cname,vname=current_user.fullname,tx_hash=str(reciept['transactionHash']),block_hash=str(reciept['blockHash']))
-			return redirect('voteSuccess')
+			get_vote_obj = voteModel.objects.filter(vname=current_user.fullname)
+			if get_vote_obj:
+				messages.error(request,"You have already Voted",extra_tags="alert-danger")
+			else:
+				request.session['city']=data['city']
+				request.session['local']=data['locality']
+				request.session['cname']=data['candidate']	
+				url="https://2factor.in/API/V1/"+API_KEY+"/SMS/"+current_user+"/AUTOGEN"
+				response= requests.request("GET",url)
+				resp_json=json.loads(response.text)
+				print(resp_json)
+				request.session['session_id']=resp_json['Details']
+				#request.session['session_id']="TEST"
+				return redirect(reverse("otp"))
 	else:
 		context={
 			'message':'Sorry the elections are currently closed.'

@@ -1,0 +1,74 @@
+{% load static %}
+html{
+    scroll-behavior: smooth;
+}
+body {
+    min-height: 100vh;
+}
+
+@keyframes gradient_animation{
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.sidebar {
+    height:calc(100vh - 128px);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+
+.sidebar-sticky .nav .nav-item{
+    border-bottom: 2px solid;
+    border-image-source:linear-gradient(-45deg,#83EAF1,#63A4FF);
+    border-image-slice:1;
+}
+
+.sidebar .sidebar-heading{
+    border-bottom: 2px solid;
+    border-image-source:linear-gradient(-45deg,#83EAF1,#63A4FF);
+    border-image-slice:1;
+}
+
+.sidebar .nav-link{
+    color:white;
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+    color: inherit;
+}
+
+
+.background-box{
+    background:url('{% static 'images/background_2.jpg' %}') no-repeat center center fixed;  
+    background-size: cover !important;  
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-color: rgba(0,0,0,0.5); 
+    height: 100vh;
+    background-blend-mode:multiply;
+    text-align: center;
+}
+
+.dropdown-menu-right{
+    right:0;
+    left:auto;
+}
+
+.footer{
+    background-color: #2a2a72;
+    background:linear-gradient(315deg,#2a2a72 0%,#009ffd 74%,#045DE9);
+    background-size: 400% 400%;
+    animation-name:gradient_animation; 
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+}

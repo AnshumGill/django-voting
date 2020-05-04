@@ -1,0 +1,29 @@
+{% extends 'user_home.html' %}
+
+{% block homeContent %}
+<div class="col-sm col-md-4 mx-auto">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.extra_tags }} alert-dismissible fade show" role="alert">
+                <span {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form method="POST">{% csrf_token %}
+        {% for field in otpForm %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="bmd-label-floating">{{ field.label_tag }}</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-raised">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

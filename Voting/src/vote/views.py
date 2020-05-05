@@ -42,7 +42,7 @@ def otpview(request):
 	if otpform.is_valid():
 		current_user=request.user
 		data=otpform.cleaned_data
-		print("Session ID 2:",request.session['session_id'])
+		#print("Session ID 2:",request.session['session_id'])
 		otp=str(data['otp'])
 		#print(otp)
 		url="https://2factor.in/API/V1/"+API_KEY+"/SMS/VERIFY/"+request.session['session_id']+"/"+otp
@@ -50,7 +50,7 @@ def otpview(request):
 		resp_json=json.loads(response.text)
 		print(resp_json)
 		status=resp_json['Status']
-		status="Success"
+		#status="Success"
 		if(status=="Success"):
 			_candidate=candidate.objects.get(cname=data['candidate'])
 			w3=Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
@@ -92,7 +92,7 @@ def castVote(request):
 			context['voteForm']=voteForm
 			context['areaForm']=None
 		if voteForm.is_valid():
-			current_user=str(request.user)[3:]
+			current_user=request.user
 			data=voteForm.cleaned_data
 			get_vote_obj = voteModel.objects.filter(vname=current_user.fullname)
 			if get_vote_obj:
@@ -101,12 +101,13 @@ def castVote(request):
 				request.session['city']=data['city']
 				request.session['local']=data['locality']
 				request.session['cname']=data['candidate']	
+				current_user=str(current_user)[3:0]
 				url="https://2factor.in/API/V1/"+API_KEY+"/SMS/"+current_user+"/AUTOGEN"
 				response= requests.request("GET",url)
 				resp_json=json.loads(response.text)
 				print(resp_json)
 				request.session['session_id']=resp_json['Details']
-				#request.session['session_id']="TEST"
+				request.session['session_id']="TEST"
 				return redirect(reverse("otp"))
 	else:
 		context={

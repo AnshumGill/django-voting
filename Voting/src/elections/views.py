@@ -19,6 +19,9 @@ def result(request):
     admin_acc = w3.eth.accounts[0]
     for c in candidates_list:
         getVote=election_contract.functions.getVote(c.id).call()
-        context['res'].append({'cname':c.cname,'votes':getVote,'affiliation':c.affiliation.pname,'location':c.location})
+        if(str(c) != "None"):
+            context['res'].append({'cname':c.cname,'votes':getVote,'affiliation':c.affiliation.pname,'location':c.location})
+        else:
+            context['res'].append({'cname':c.cname,'votes':getVote,'affiliation':"-",'location':"-"})
     return render(request,"results.html",context)
 

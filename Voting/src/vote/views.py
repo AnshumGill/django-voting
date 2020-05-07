@@ -12,6 +12,8 @@ from django.contrib import messages
 import requests
 import json
 from django.conf import settings
+from django.contrib.staticfiles.storage import staticfiles_storage
+import pandas as pd
 # Create your views here.
 API_KEY=getattr(settings,"API_KEY")
 CONTRACT_ADDRESS=getattr(settings,"CONTRACT_ADDRESS")
@@ -19,7 +21,16 @@ ABI=getattr(settings,"ABI")
 
 @login_required
 def userHome(request):
-	return render(request,"user_home.html",{})
+	election=pd.read_csv(staticfiles_storage.path("Election.csv"))
+	cols=list(election.columns)	
+	rows=[]
+	for i,j in election.iterrows():
+		rows.append([j[0],j[1],j[2],j[3],j[4]])
+	context={
+		'cols':cols,
+		'rows':rows
+	}
+	return render(request,"user_home.html",context)
 
 def verifyVote(request):
 	obj=voteModel.objects.filter(vname=request.user.fullname).all()
@@ -45,12 +56,12 @@ def otpview(request):
 		#print("Session ID 2:",request.session['session_id'])
 		otp=str(data['otp'])
 		#print(otp)
-		url="https://2factor.in/API/V1/"+API_KEY+"/SMS/VERIFY/"+request.session['session_id']+"/"+otp
-		response=requests.request("GET",url)
-		resp_json=json.loads(response.text)
-		print(resp_json)
-		status=resp_json['Status']
-		#status="Success"
+		#url="https://2factor.in/API/V1/"+API_KEY+"/SMS/VERIFY/"+request.session['session_id']+"/"+otp
+		#response=requests.request("GET",url)
+		#resp_json=json.loads(response.text)
+		#print(resp_json)
+		#status=resp_json['Status']
+		status="Success"
 		if(status=="Success"):
 			_candidate=candidate.objects.get(cname=data['candidate'])
 			w3=Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
@@ -86,7 +97,9 @@ def castVote(request):
 			city=data['city']
 			locality=data['locality']
 			q=candidate.objects.search(locality)
+			none_candidate=candidate.objects.get(cname="None")
 			candidate_list=[(i,str(i)) for i in q]
+			candidate_list.append((none_candidate,str(none_candidate)))
 			voteForm=castVoteForm(request.POST or None,initial={'city':city,'locality':locality})
 			voteForm.fields['candidate'].choices=candidate_list
 			context['voteForm']=voteForm
@@ -102,11 +115,11 @@ def castVote(request):
 				request.session['local']=data['locality']
 				request.session['cname']=data['candidate']	
 				current_user=str(current_user)[3:0]
-				url="https://2factor.in/API/V1/"+API_KEY+"/SMS/"+current_user+"/AUTOGEN"
-				response= requests.request("GET",url)
-				resp_json=json.loads(response.text)
-				print(resp_json)
-				request.session['session_id']=resp_json['Details']
+				#url="https://2factor.in/API/V1/"+API_KEY+"/SMS/"+current_user+"/AUTOGEN"
+				#response= requests.request("GET",url)
+				#resp_json=json.loads(response.text)
+				#print(resp_json)
+				#request.session['session_id']=resp_json['Details']
 				request.session['session_id']="TEST"
 				return redirect(reverse("otp"))
 	else:

@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <div class="d-flex flex-row wrapper">
 	{% include 'sidebar.html' %}
@@ -12,9 +11,10 @@
 							<i class="material-icons">more_vert</i>
 						</button>
 						<div class="dropdown-menu dropdown-menu-left" aria-labelledby="menu">
-							<a class="dropdown-item">Vote</a>
-							<a class="dropdown-item">Verify Vote</a>
+							<a class="dropdown-item" href="{% url 'castVote' %}">Vote</a>
+							<a class="dropdown-item" href="{% url 'verifyVote' %}">Verify Vote</a>
 							<a class="dropdown-item" href="{% url 'partyInfo' %}">Party Information</a>
+							<a class="dropdown-item" href="{% url 'result' %}">Result</a>
 						</div>
 					</div>
 					<div class="ml-auto btn-group">
@@ -29,8 +29,39 @@
 			</div>
 		</div>
 		<div class="row pt-3">
-			{% block homeContent %}
-			{% endblock %}
+			{% url 'userHome' as homeurl %}
+			{% if request.path == homeurl %}
+				<div class="col-12 text-center mb-2">
+					<h3>Upcoming Elections in all States</h3>
+				</div>
+				<div class="col-12">
+					<div class="table-responsive" >
+						<table class="table table-hover">
+							<thead class="thead-dark">
+								<tr>
+									{% for col in cols %}
+										<th>{{ col }}</th>
+									{% endfor %}
+								</tr>
+							</thead>
+							<tbody>
+								{% for row in rows %}
+									<tr>
+										<td>{{ row.0 }}</td>
+										<td>{{ row.1 }}</td>
+										<td>{{ row.2 }}</td>
+										<td>{{ row.3 }}</td>
+										<td>{{ row.4 }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			{% else %}
+				{% block homeContent %}
+				{% endblock %}
+			{% endif %}
 		</div>
 	</div>	
 

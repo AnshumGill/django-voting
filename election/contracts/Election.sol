@@ -14,9 +14,10 @@ contract Election {
         uint indexed _candidateId
     );
     constructor() public{
-        addCandidate("Candidate 1");
-        addCandidate("Candidate 2");
-        addCandidate("Candidate 3");
+        addCandidate("ABC");
+        addCandidate("DEF");
+        addCandidate("XYZ");
+        addCandidate("None");
     }
 
     function addCandidate(string memory _name) private {
